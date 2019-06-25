@@ -64,7 +64,11 @@ public class FileSyncJobControlFile extends File {
     }
 
     public void add(File file) {
+	
+	System.out.println("Adding file " + file.getName() + " to sync job control file");
+	
 	this.files.add(file);
+	
 	this.writeToFile();
     }
 
