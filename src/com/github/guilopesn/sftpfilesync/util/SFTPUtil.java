@@ -59,6 +59,13 @@ public class SFTPUtil {
 	    System.out.println("Directory tree structure correction succeed!");
 	} else {
 	    System.out.println("Directory tree structure is correct!");
+
+	    try {
+		channelSftp.cd(destination);
+	    } catch (SftpException sftpException) {
+		throw new Error("Could not get in on directory! Exception: " + sftpException.getClass().getName()
+			+ " Message: " + sftpException.getMessage());
+	    }
 	}
     }
 }
