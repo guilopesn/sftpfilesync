@@ -56,7 +56,13 @@ public class FileSyncJob implements Runnable {
 
 		System.out.println("Synchronizing " + file.getName() + " with the server");
 
-		sftpServer.uploadFile(file, this.destination, this.overwriteondestination);
+		if (this.type.equals("DIFFERENTIAL")) {
+		    if (sftpServer.uploadFile(file, this.destination, this.overwriteondestination)) {
+			this.fileSyncJobControlFile.add(file);
+		    }
+		} else {
+		    sftpServer.uploadFile(file, this.destination, this.overwriteondestination);
+		}
 
 		System.out.println(file.getName() + " synced with the server");
 	    });
@@ -97,8 +103,6 @@ public class FileSyncJob implements Runnable {
 			.println("File not synced yet! Adding " + file.getName() + " to list of files to synchronize");
 
 		this.filesToSync.add(file);
-
-		this.fileSyncJobControlFile.add(file);
 	    } else {
 		System.out.println("File already synced! Removing from list of files to synchronize");
 	    }

@@ -56,10 +56,11 @@ public class SFTPServer {
 	this.session.disconnect();
     }
 
-    public void uploadFile(File file, String destination, boolean overwriteondestination) {
+    public boolean uploadFile(File file, String destination, boolean overwriteondestination) {
 
 	ChannelSftp channelSftp = null;
-
+	Boolean uploadSuccess = false;
+	
 	try {
 
 	    channelSftp = (ChannelSftp) this.session.openChannel("sftp");
@@ -79,6 +80,9 @@ public class SFTPServer {
 	    } else {
 		channelSftp.put(new FileInputStream(file), destination + "/" + file.getName());
 	    }
+
+	    uploadSuccess = true;
+
 	} catch (SftpException | IOException exception) {
 
 	    if (channelSftp != null && channelSftp.isConnected()) {
@@ -88,5 +92,7 @@ public class SFTPServer {
 	    throw new Error("Error! Could not upload file! Exception: " + exception.getClass().getName() + " Message: "
 		    + exception.getMessage());
 	}
+	
+	return uploadSuccess;
     }
 }
