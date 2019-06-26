@@ -1,8 +1,10 @@
-# Starting with SFTPFileSync!
+
+# Getting Started with SFTPFileSync!
 
 # Configuration
 
-All SFTPFileSync sync routine configuration parameters must be contained in a configuration file called SFTPFileSync.config.
+
+All SFTPFileSync synchronization jobs configuration parameters must be contained in a configuration file called SFTPFileSync.config. This configuration file must be in the same directory as the SFTPFileSync binary.
 
 ## Example Configuration File
 
@@ -31,49 +33,51 @@ All SFTPFileSync sync routine configuration parameters must be contained in a co
 ### SFTP Server Parameters
 
 #### sftpserver.host
-	Should contain the SFTP server address.
+	Must especify the SFTP server address.
 	Example: 127.0.0.1
 
 #### sftpserver.port
-	Should contain the SFTP server listen port.
+	Must especify the SFTP server listen port.
 	Example: 22
 
 #### sftpserver.username
-	Should contain the username to authenticate on SFTP server.
+	Must especify the username to authenticate on SFTP server.
 	Example: username
 
 #### sftpserver.password
-	Should contain the password to the username seted at sftpserver.username parameter to authenticate on SFTP server.
+	Must especify the password to the username seted at sftpserver.username parameter to authenticate on SFTP server.
 	Example: password
 
 #### sftpserver.checkhostidentity
-	Should to be seted to true or false to verify or not the SFTP server identity.
+	Must be seted to true or false to verify or not the SFTP server identity.
 	Example: false
 
 ### FileSync Jobs Parameters
 
-The number of jobs that can be defined are unlimited. Each job must have a name and a sequential index that defines them. Example:
+The number of jobs that can be defined are unlimited. Each job must have a name and a numeric index that defines them.
+Example:
 
-- The first job on the example configuration fil above it's called "Test Directory" and its index will be 1.
-- The second job on the example configuration fil above it's called "Test CSV File" and its index will be 2.
+- The first job on the example configuration file above it's called "Test Directory" and it's index will be 1.
+- The second job on the example configuration file above it's called "Test CSV File" and it's index will be 2.
 
-Each job is defined by a set of the following parameters.
-Where the jobindex keyword exists in the parameter name, it must be replaced with the index number defined by you for this job.
+Each job is defined by a set of the 5 following parameters.
+
+Note: Where the jobindex keyword exists in the parameter name, it must be replaced with the index number defined by you for this job.
 
 #### filesyncjobs
 	Must contains a comma-separated list of the jobs (Already defineds at configuration file) that must be executeds.
 	Example: 1,2
 
 #### filesyncjob.jobindex.name
-	Must contains the name of the job.
+	Must especify the name of the job.
 	Example: Test Directory
 
 #### filesyncjob.jobindex.source
-	Must contain the file or directory that must be synchronized.
+	Must especify the file or directory that must be synchronized.
 	Example: C:\\Test
 
 #### filesyncjob.jobindex.destination
-	Must specify the remote path to where the source files should be synchronized.
+	Must especify the remote path to where the source files should be synchronized.
 	Example: /test
 
 #### filesyncjob.jobindex.overwriteondestination
@@ -81,12 +85,13 @@ Where the jobindex keyword exists in the parameter name, it must be replaced wit
 	Example: false
 
 #### filesyncjob.jobindex.type
-	Must be set to FULL or DIFFERENTIAL. The behaviors will be as follows:
+	Must be seted to FULL or DIFFERENTIAL. The behaviors for each one will be as follows:
 	
-		- FULL - Synchronize all files from source to destination;
+		- FULL - Synchronize all files from source to destination, even when was already synchronized;
 		- DIFFERENTIAL - Synchronizes only source files that have not yet been synchronized with the destination.
 	
-	Note: If the type is set to DIFFERENTIAL, a file whose name will be composed of "Job Name" (Defined in the filesyncjob.jobindex.name parameter) + the .syncjobcontrolfile extension will be created. This file is created on the first run of the job, or if it does not exist.
+	Note: If the type is set to DIFFERENTIAL, a file whose name will be composed of job name (Defined in the filesyncjob.jobindex.name parameter) + the .syncjobcontrolfile extension will be created. This file is created on the first run of the job, or if it does not exist.
+	If the file is not found by the job, or in case of first execution of this job, a FULL job will be executed.
 
 # Execution
 
