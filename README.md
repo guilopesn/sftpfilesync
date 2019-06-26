@@ -23,7 +23,7 @@ All SFTPFileSync synchronization jobs configuration parameters must be contained
 	filesyncjob.1.type=DIFFERENTIAL
 
 	filesyncjob.2.name=Test CSV File
-	filesyncjob.2.source=C:\\Test\Test.csv
+	filesyncjob.2.source=C:\\Test\\Test.csv
 	filesyncjob.2.destination=/test
 	filesyncjob.2.overwriteondestination=false
 	filesyncjob.2.type=FULL
