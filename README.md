@@ -62,7 +62,7 @@ Example:
 - The first job on the example configuration file above it's called "Test Directory" and it's index will be 1.
 - The second job on the example configuration file above it's called "Test CSV File" and it's index will be 2.
 
-Each job is defined by a set of the 5 following parameters.
+Each job is defined by a set of the 6 following parameters.
 
 Note: Where the jobindex keyword exists in the parameter name, it must be replaced with the index number defined by you for this job.
 
