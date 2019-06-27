@@ -10,6 +10,7 @@ public class FileSyncJob implements Runnable {
 
     private final String name;
     private final File source;
+    private final String filesToIgnoreRegex;
     private final String destination;
     private final boolean overwriteondestination;
     private final String type;
@@ -17,11 +18,12 @@ public class FileSyncJob implements Runnable {
     private FileSyncJobControlFile fileSyncJobControlFile;
     List<File> filesToSync;
 
-    public FileSyncJob(String name, File source, String destination, boolean overwriteondestination, String type,
-	    SFTPServer sftpServer) {
+    public FileSyncJob(String name, File source, String filesToIgnoreRegex, String destination,
+	    boolean overwriteondestination, String type, SFTPServer sftpServer) {
 	super();
 	this.name = name;
 	this.source = source;
+	this.filesToIgnoreRegex = filesToIgnoreRegex;
 	this.destination = destination;
 	this.overwriteondestination = overwriteondestination;
 	this.type = type;
@@ -44,7 +46,7 @@ public class FileSyncJob implements Runnable {
 
 	this.listFilesToSync();
 
-	System.out.println("Listing proccess resulted in " + this.filesToSync.size() + " files to sync");
+	System.out.println("Listing proccess resulted in " + this.filesToSync.size() + " files to synchronize");
 
 	if (!this.filesToSync.isEmpty()) {
 
@@ -57,6 +59,7 @@ public class FileSyncJob implements Runnable {
 		System.out.println("Synchronizing " + file.getName() + " with the server");
 
 		if (this.type.equals("DIFFERENTIAL")) {
+
 		    if (sftpServer.uploadFile(file, this.destination, this.overwriteondestination)) {
 			this.fileSyncJobControlFile.add(file);
 		    }
@@ -93,20 +96,30 @@ public class FileSyncJob implements Runnable {
 
     private void addFileToSync(File file) {
 
-	if (this.type.equals("DIFFERENTIAL")) {
+	boolean isToSync;
 
-	    System.out.println("Verifying if file " + file.getName() + " was already synced");
+	System.out.println("Starting " + file.getName() + " file verifications");
 
-	    if (!this.fileSyncJobControlFile.contains(file)) {
+	isToSync = verifyIfFileIsToIgnore(file);
 
-		System.out
-			.println("File not synced yet! Adding " + file.getName() + " to list of files to synchronize");
+	if (isToSync) {
+	    System.out.println("File does not match with ignore regex!");
+	} else {
+	    System.out.println("File matches with ignore regex! Removing from list of files to synchronize");
+	}
 
-		this.filesToSync.add(file);
+	if (isToSync) {
+
+	    isToSync = verifyIfFileWasAlreadySynced(file);
+
+	    if (isToSync) {
+		System.out.println("File not synced yet!");
 	    } else {
 		System.out.println("File already synced! Removing from list of files to synchronize");
 	    }
-	} else {
+	}
+
+	if (isToSync) {
 
 	    System.out.println("Adding " + file.getName() + " to the list of files to synchronize");
 
@@ -114,4 +127,28 @@ public class FileSyncJob implements Runnable {
 	}
     }
 
+    private boolean verifyIfFileIsToIgnore(File file) {
+
+	if (this.filesToIgnoreRegex != null && !this.filesToIgnoreRegex.isEmpty()) {
+
+	    System.out.println("Verifying if file matches with ignore regex");
+
+	    return !file.getName().matches(this.filesToIgnoreRegex);
+	}
+
+	return true;
+    }
+
+    private boolean verifyIfFileWasAlreadySynced(File file) {
+
+	if (this.type.equals("DIFFERENTIAL")) {
+
+	    System.out.println("Verifying if file was already synced");
+
+	    return !this.fileSyncJobControlFile.contains(file);
+
+	}
+
+	return true;
+    }
 }

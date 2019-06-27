@@ -18,12 +18,14 @@ All SFTPFileSync synchronization jobs configuration parameters must be contained
 
 	filesyncjob.1.name=Test Directory
 	filesyncjob.1.source=C:\\Test
+	filesyncjob.1.filestoignoreregex=.*.xml
 	filesyncjob.1.destination=/test
 	filesyncjob.1.overwriteondestination=false
 	filesyncjob.1.type=DIFFERENTIAL
 
 	filesyncjob.2.name=Test CSV File
 	filesyncjob.2.source=C:\\Test\\Test.csv
+	filesyncjob.1.filestoignoreregex=
 	filesyncjob.2.destination=/test
 	filesyncjob.2.overwriteondestination=false
 	filesyncjob.2.type=FULL
@@ -75,6 +77,11 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 #### filesyncjob.jobindex.source
 	Must especify the file or directory that must be synchronized.
 	Example: C:\\Test
+
+#### filesyncjob.jobindex.filestoignoreregex
+	Must be seated with a regex to match files to be ignored on source.
+	Example: .*.xml
+	Note: Leave blank to do not ignore any files in source.
 
 #### filesyncjob.jobindex.destination
 	Must especify the remote path to where the source files should be synchronized.

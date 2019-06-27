@@ -27,7 +27,7 @@ public class SFTPFileSync {
 
 	String filesyncjobs = configurationFile.getConfiguration("filesyncjobs");
 
-	String[] filesyncjobsArray = configurationFile.getConfiguration("filesyncjobs").split(",");
+	String[] filesyncjobsArray = filesyncjobs.split(",");
 
 	System.out.println("Filesyncjobs found: " + filesyncjobs);
 
@@ -37,6 +37,7 @@ public class SFTPFileSync {
 
 	    new FileSyncJob(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".name"),
 		    new File(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".source")),
+		    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".filestoignoreregex"),
 		    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".destination"),
 		    Boolean.parseBoolean(configurationFile
 			    .getConfiguration("filesyncjob." + fileSyncJobIndex + ".overwriteondestination")),
