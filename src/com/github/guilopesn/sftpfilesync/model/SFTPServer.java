@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.guilopesn.sftpfilesync.util.SFTPUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -12,6 +15,8 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 public class SFTPServer {
+
+    private static Logger logger = LogManager.getLogger();
 
     private final String host;
     private final int port;
@@ -47,6 +52,10 @@ public class SFTPServer {
 	    this.session.connect();
 
 	} catch (JSchException jSchException) {
+
+	    logger.fatal("Could not open SSH connection! Exception: " + jSchException.getClass().getName()
+		    + " Message: " + jSchException.getMessage());
+
 	    throw new Error("Could not open SSH connection! Exception: " + jSchException.getClass().getName()
 		    + " Message: " + jSchException.getMessage());
 	}
@@ -60,13 +69,17 @@ public class SFTPServer {
 
 	ChannelSftp channelSftp = null;
 	Boolean uploadSuccess = false;
-	
+
 	try {
 
 	    channelSftp = (ChannelSftp) this.session.openChannel("sftp");
 
 	    channelSftp.connect();
 	} catch (JSchException jSchException) {
+
+	    logger.fatal("Error! Could not open SFTP channel! Exception: " + jSchException.getClass().getName()
+		    + " Message: " + jSchException.getMessage());
+
 	    throw new Error("Error! Could not open SFTP channel! Exception: " + jSchException.getClass().getName()
 		    + " Message: " + jSchException.getMessage());
 	}
@@ -89,10 +102,13 @@ public class SFTPServer {
 		channelSftp.disconnect();
 	    }
 
+	    logger.fatal("Error! Could not upload file! Exception: " + exception.getClass().getName() + " Message: "
+		    + exception.getMessage());
+
 	    throw new Error("Error! Could not upload file! Exception: " + exception.getClass().getName() + " Message: "
 		    + exception.getMessage());
 	}
-	
+
 	return uploadSuccess;
     }
 }

@@ -105,4 +105,4 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 To execute the SFTPFileSync binary, replace the pathtojar keyword in the command below with the path where the binary is found, and then run it:
 
 	cd pathtojar
-	java -jar pathtojar\SFTPFileSync.jar >> pathtojar\SFTPFileSync.log
+	java -jar pathtojar\SFTPFileSync.jar

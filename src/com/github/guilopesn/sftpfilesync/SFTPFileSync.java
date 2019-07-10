@@ -3,19 +3,24 @@ package com.github.guilopesn.sftpfilesync;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.guilopesn.sftpfilesync.model.ConfigurationFile;
 import com.github.guilopesn.sftpfilesync.model.FileSyncJob;
 import com.github.guilopesn.sftpfilesync.model.SFTPServer;
 
 public class SFTPFileSync {
 
+    private static Logger logger = LogManager.getLogger();
+    
     public static void main(String[] args) throws IOException {
-
-	System.out.println("Starting SFTPFileSync proccess");
+	
+	logger.info("Starting SFTPFileSync process");
 
 	ConfigurationFile configurationFile = new ConfigurationFile();
 
-	System.out.println("Retrieving SFTP server parameters from configuration file");
+	logger.info("Retrieving SFTP server parameters from configuration file");
 
 	SFTPServer sftpServer = new SFTPServer(configurationFile.getConfiguration("sftpserver.host"),
 		Integer.parseInt(configurationFile.getConfiguration("sftpserver.port")),
@@ -23,13 +28,13 @@ public class SFTPFileSync {
 		configurationFile.getConfiguration("sftpserver.password"),
 		Boolean.parseBoolean(configurationFile.getConfiguration("sftpserver.checkhostidentity")));
 
-	System.out.println("Listing FileSyncJob from configuration file");
+	logger.info("Listing FileSyncJob from configuration file");
 
 	String filesyncjobs = configurationFile.getConfiguration("filesyncjobs");
 
 	String[] filesyncjobsArray = filesyncjobs.split(",");
 
-	System.out.println("Filesyncjobs found: " + filesyncjobs);
+	logger.info("Filesyncjobs found: " + filesyncjobs);
 
 	for (int i = 0; i < filesyncjobsArray.length; i++) {
 
@@ -44,7 +49,7 @@ public class SFTPFileSync {
 		    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".type"), sftpServer).run();
 	}
 
-	System.out.println("Stopping SFTPFileSync proccess");
+	logger.info("Stopping SFTPFileSync process");
 
 	System.exit(0);
     }
