@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
 	<Appenders>
-		<File name="SFTPFileSyncLog" fileName="SFTPFileSync.log"
-			immediateFlush="false" append="true">
+		<RollingFile name="LOGFILE"
+			fileName="logs/SFTPFileSyncLog"
+			filePattern="logs/SFTPFileSyncLog-%d{yyyy-MM-dd}.log.gz">
 			<PatternLayout
-				pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%level] %msg%n" />
-		</File>
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Root level="info">
-			<AppenderRef ref="SFTPFileSyncLog" />
+		<Root level="DEBUG">
+			<AppenderRef ref="LOGFILE" />
 		</Root>
 	</Loggers>
 </Configuration>
