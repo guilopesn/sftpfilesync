@@ -1,6 +1,5 @@
 package com.github.guilopesn.sftpfilesync.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -88,15 +87,18 @@ public class FileSyncJob implements Runnable {
 	    try {
 
 		Files.list(this.source.toPath()).forEach((path) -> {
-		    if (!path.toFile().isDirectory()) {
-			this.addFileToSync(path.toFile());
+
+		    File file = new File(path.toUri());
+
+		    if (!file.isDirectory()) {
+			this.addFileToSync(file);
 		    }
 		});
 	    } catch (IOException ioException) {
-		
+
 		logger.fatal("Could not list files in directory! Exception: " + ioException.getClass().getName()
 			+ " Message: " + ioException.getMessage());
-		
+
 		throw new Error("Could not list files in directory! Exception: " + ioException.getClass().getName()
 			+ " Message: " + ioException.getMessage());
 	    }

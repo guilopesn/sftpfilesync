@@ -1,21 +1,21 @@
 package com.github.guilopesn.sftpfilesync;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.github.guilopesn.sftpfilesync.model.ConfigurationFile;
+import com.github.guilopesn.sftpfilesync.model.File;
 import com.github.guilopesn.sftpfilesync.model.FileSyncJob;
 import com.github.guilopesn.sftpfilesync.model.SFTPServer;
 
 public class SFTPFileSync {
 
     private static Logger logger = LogManager.getLogger();
-    
+
     public static void main(String[] args) throws IOException {
-	
+
 	logger.info("Starting SFTPFileSync process");
 
 	ConfigurationFile configurationFile = new ConfigurationFile();

@@ -2,13 +2,13 @@ package com.github.guilopesn.sftpfilesync.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +20,7 @@ public class FileSyncJobControlFile extends File {
 
     private static Logger logger = LogManager.getLogger();
 
-    private Set<File> files = new FileList();
+    private Set<File> files = new HashSet<>();
 
     public FileSyncJobControlFile(String syncJobControlFileName) {
 
