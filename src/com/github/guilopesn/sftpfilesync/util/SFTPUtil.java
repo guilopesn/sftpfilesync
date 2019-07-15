@@ -1,9 +1,14 @@
 package com.github.guilopesn.sftpfilesync.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 
 public class SFTPUtil {
+
+    private static Logger logger = LogManager.getLogger();
 
     public static boolean verifyIfFolderExists(ChannelSftp channelSftp, String folder) {
 
@@ -20,11 +25,11 @@ public class SFTPUtil {
 
     public static void verifyDirectoryTreeConsistency(ChannelSftp channelSftp, String destination) {
 
-	System.out.println("Verifying if directory tree " + destination + " is consistent");
+	logger.info("Verifying if directory tree " + destination + " is consistent");
 
 	if (!verifyIfFolderExists(channelSftp, destination)) {
 
-	    System.out.println("Directory tree structure is inconsistent! Correcting");
+	    logger.info("Directory tree structure is inconsistent! Correcting");
 
 	    String[] completePath = destination.split("/");
 	    String currentDirectory = "";
@@ -35,34 +40,42 @@ public class SFTPUtil {
 
 		currentDirectory = currentDirectory + "/" + directory;
 
-		System.out.println("Verifying if directory " + currentDirectory + " exists");
+		logger.info("Verifying if directory " + currentDirectory + " exists");
 
 		if (!verifyIfFolderExists(channelSftp, currentDirectory)) {
 
-		    System.out.println("Directory does not exists! Creating");
+		    logger.info("Directory does not exists! Creating");
 
 		    try {
 			channelSftp.mkdir(currentDirectory);
 
-			System.out.println("Directory creation succeed");
+			logger.info("Directory creation succeed");
 
 			channelSftp.cd(currentDirectory);
 		    } catch (SftpException sftpException) {
+
+			logger.fatal("Could not create directory! Exception: " + sftpException.getClass().getName()
+				+ " Message: " + sftpException.getMessage());
+
 			throw new Error("Could not create directory! Exception: " + sftpException.getClass().getName()
 				+ " Message: " + sftpException.getMessage());
 		    }
 		} else {
-		    System.out.println("Directory exists! Going under on tree");
+		    logger.info("Directory exists! Going under on tree");
 		}
 	    }
 
-	    System.out.println("Directory tree structure correction succeed!");
+	    logger.info("Directory tree structure correction succeed!");
 	} else {
-	    System.out.println("Directory tree structure is correct!");
+	    logger.info("Directory tree structure is correct!");
 
 	    try {
 		channelSftp.cd(destination);
 	    } catch (SftpException sftpException) {
+
+		logger.fatal("Could not get in on directory! Exception: " + sftpException.getClass().getName()
+			+ " Message: " + sftpException.getMessage());
+
 		throw new Error("Could not get in on directory! Exception: " + sftpException.getClass().getName()
 			+ " Message: " + sftpException.getMessage());
 	    }
