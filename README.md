@@ -81,7 +81,7 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 	Example: C:\\Test
 	
 #### filesyncjob.jobindex.isrecursively
-	Must specify whether the source directory of job should be recursively synchronized.
+	Must specify whether the source directory of job (Defined in the filesyncjob.jobindex.source parameter) should be recursively synchronized.
 	Example: true
 	Note: It is only considered in cases where the origin defined for the job is a directory
 
@@ -111,5 +111,4 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 
 To execute the SFTPFileSync binary, replace the pathtojar keyword in the command below with the path where the binary is found, and then run it:
 
-	cd pathtojar
 	java -jar pathtojar\SFTPFileSync.jar
