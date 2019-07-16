@@ -1,12 +1,13 @@
 package com.github.guilopesn.sftpfilesync.model;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.github.guilopesn.sftpfilesync.util.FileUtil;
+import com.github.guilopesn.sftpfilesync.util.SFTPUtil;
 
 public class FileSyncJob implements Runnable {
 
@@ -14,27 +15,29 @@ public class FileSyncJob implements Runnable {
 
     private final String name;
     private final File source;
+    private final boolean isRrecursively;
     private final String filesToIgnoreRegex;
-    private final String destination;
+    private final File destination;
     private final boolean overwriteondestination;
-    private final String type;
+    private final boolean isDifferential;
     private final SFTPServer sftpServer;
     private FileSyncJobControlFile fileSyncJobControlFile;
     List<File> filesToSync;
 
-    public FileSyncJob(String name, File source, String filesToIgnoreRegex, String destination,
-	    boolean overwriteondestination, String type, SFTPServer sftpServer) {
+    public FileSyncJob(String name, File source, boolean isRrecursively, String filesToIgnoreRegex, File destination,
+	    boolean overwriteondestination, boolean isDifferential, SFTPServer sftpServer) {
 	super();
 	this.name = name;
 	this.source = source;
+	this.isRrecursively = isRrecursively;
 	this.filesToIgnoreRegex = filesToIgnoreRegex;
 	this.destination = destination;
 	this.overwriteondestination = overwriteondestination;
-	this.type = type;
+	this.isDifferential = isDifferential;
 	this.sftpServer = sftpServer;
 	this.filesToSync = new ArrayList<>();
 
-	if (this.type.equals("DIFFERENTIAL")) {
+	if (this.isDifferential) {
 	    this.fileSyncJobControlFile = new FileSyncJobControlFile(this.name);
 	}
     }
@@ -46,7 +49,7 @@ public class FileSyncJob implements Runnable {
 
 	logger.info("Listing files to synchronize");
 
-	logger.info("FileSyncJob type is set to " + this.type);
+	logger.info("FileSyncJob is differential: " + this.isDifferential);
 
 	this.listFilesToSync();
 
@@ -62,13 +65,15 @@ public class FileSyncJob implements Runnable {
 
 		logger.info("Synchronizing " + file.getName() + " with the server");
 
-		if (this.type.equals("DIFFERENTIAL")) {
+		String fileDestination = SFTPUtil.getFullDestinationFilePath(this.source, this.destination, file);
 
-		    if (sftpServer.uploadFile(file, this.destination, this.overwriteondestination)) {
+		if (this.isDifferential) {
+
+		    if (sftpServer.uploadFile(file, fileDestination, this.overwriteondestination)) {
 			this.fileSyncJobControlFile.add(file);
 		    }
 		} else {
-		    sftpServer.uploadFile(file, this.destination, this.overwriteondestination);
+		    sftpServer.uploadFile(file, fileDestination, this.overwriteondestination);
 		}
 
 		logger.info(file.getName() + " synced with the server");
@@ -84,23 +89,11 @@ public class FileSyncJob implements Runnable {
 	    this.addFileToSync(this.source);
 	} else {
 
-	    try {
+	    if (this.isRrecursively) {
 
-		Files.list(this.source.toPath()).forEach((path) -> {
-
-		    File file = new File(path.toUri());
-
-		    if (!file.isDirectory()) {
-			this.addFileToSync(file);
-		    }
-		});
-	    } catch (IOException ioException) {
-
-		logger.fatal("Could not list files in directory! Exception: " + ioException.getClass().getName()
-			+ " Message: " + ioException.getMessage());
-
-		throw new Error("Could not list files in directory! Exception: " + ioException.getClass().getName()
-			+ " Message: " + ioException.getMessage());
+		for (File file : FileUtil.listFileTree(this.source)) {
+		    this.addFileToSync(file);
+		}
 	    }
 	}
     }
@@ -152,7 +145,7 @@ public class FileSyncJob implements Runnable {
 
     private boolean verifyIfFileWasAlreadySynced(File file) {
 
-	if (this.type.equals("DIFFERENTIAL")) {
+	if (this.isDifferential) {
 
 	    logger.info("Verifying if file was already synced");
 

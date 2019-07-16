@@ -42,11 +42,15 @@ public class SFTPFileSync {
 
 	    new FileSyncJob(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".name"),
 		    new File(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".source")),
+		    Boolean.parseBoolean(
+			    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".isrecursively")),
 		    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".filestoignoreregex"),
-		    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".destination"),
+		    new File(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".destination")),
 		    Boolean.parseBoolean(configurationFile
 			    .getConfiguration("filesyncjob." + fileSyncJobIndex + ".overwriteondestination")),
-		    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".type"), sftpServer).run();
+		    Boolean.parseBoolean(
+			    configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".isdifferential")),
+		    sftpServer).run();
 	}
 
 	logger.info("Stopping SFTPFileSync process");

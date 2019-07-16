@@ -3,12 +3,19 @@ package com.github.guilopesn.sftpfilesync.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.github.guilopesn.sftpfilesync.model.File;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 
 public class SFTPUtil {
 
     private static Logger logger = LogManager.getLogger();
+
+    public static String getFullDestinationFilePath(File source, File destination, File file) {
+
+	return destination.getPath().replace('\\', '/').concat(
+		file.getParentFile().toPath().toString().replace(source.getPath(), "").replace('\\', '/').concat("/"));
+    }
 
     public static boolean verifyIfFolderExists(ChannelSftp channelSftp, String folder) {
 
@@ -29,7 +36,7 @@ public class SFTPUtil {
 
 	if (!verifyIfFolderExists(channelSftp, destination)) {
 
-	    logger.info("Directory tree structure is inconsistent! Correcting");
+	    logger.warn("Directory tree structure is inconsistent! Correcting");
 
 	    String[] completePath = destination.split("/");
 	    String currentDirectory = "";
@@ -44,7 +51,7 @@ public class SFTPUtil {
 
 		if (!verifyIfFolderExists(channelSftp, currentDirectory)) {
 
-		    logger.info("Directory does not exists! Creating");
+		    logger.warn("Directory does not exists! Creating");
 
 		    try {
 			channelSftp.mkdir(currentDirectory);

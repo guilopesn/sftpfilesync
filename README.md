@@ -18,17 +18,19 @@ All SFTPFileSync synchronization jobs configuration parameters must be contained
 
 	filesyncjob.1.name=Test Directory
 	filesyncjob.1.source=C:\\Test
+	filesyncjob.1.isrecursively=true
 	filesyncjob.1.filestoignoreregex=.*.xml
 	filesyncjob.1.destination=/test
 	filesyncjob.1.overwriteondestination=false
-	filesyncjob.1.type=DIFFERENTIAL
+	filesyncjob.1.isdifferential=true
 
 	filesyncjob.2.name=Test CSV File
 	filesyncjob.2.source=C:\\Test\\Test.csv
-	filesyncjob.1.filestoignoreregex=
+	filesyncjob.2.isrecursively=false
+	filesyncjob.2.filestoignoreregex=
 	filesyncjob.2.destination=/test
 	filesyncjob.2.overwriteondestination=false
-	filesyncjob.2.type=FULL
+	filesyncjob.2.isdifferential=false
 
 ## Configuration Parameters
 
@@ -71,12 +73,17 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 	Example: 1,2
 
 #### filesyncjob.jobindex.name
-	Must especify the name of the job.
+	Must specify the name of the job.
 	Example: Test Directory
 
 #### filesyncjob.jobindex.source
-	Must especify the file or directory that must be synchronized.
+	Must specify the file or directory that must be synchronized.
 	Example: C:\\Test
+	
+#### filesyncjob.jobindex.isrecursively
+	Must specify whether the source directory of job should be recursively synchronized.
+	Example: true
+	Note: It is only considered in cases where the origin defined for the job is a directory
 
 #### filesyncjob.jobindex.filestoignoreregex
 	Must be seated with a regex to match files to be ignored on source.
@@ -84,21 +91,21 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 	Note: Leave blank to do not ignore any files in source.
 
 #### filesyncjob.jobindex.destination
-	Must especify the remote path to where the source files should be synchronized.
+	Must specify the remote path to where the source files should be synchronized.
 	Example: /test
 
 #### filesyncjob.jobindex.overwriteondestination
 	Must be seted to true or false to overwrite or not the file on destination in case of already exists.
 	Example: false
 
-#### filesyncjob.jobindex.type
-	Must be seted to FULL or DIFFERENTIAL. The behaviors for each one will be as follows:
+#### filesyncjob.jobindex.isdifferential
+	Must be seted to true or false. The behaviors for each one will be as follows:
 	
-		- FULL - Synchronize all files from source to destination, even when was already synchronized;
-		- DIFFERENTIAL - Synchronizes only source files that have not yet been synchronized with the destination.
+		- false - Synchronize all files from source to destination, even when was already synchronized;
+		- true - Synchronizes only source files that have not yet been synchronized with the destination.
 	
-	Note: If the type is set to DIFFERENTIAL, a file whose name will be composed of job name (Defined in the filesyncjob.jobindex.name parameter) + the .syncjobcontrolfile extension will be created. This file is created on the first run of the job, or if it does not exist.
-	If the file is not found by the job, or in case of first execution of this job, a FULL job will be executed.
+	Note: If the type is set to true, a file whose name will be composed of job name (Defined in the filesyncjob.jobindex.name parameter) + the .syncjobcontrolfile extension will be created. This file is created on the first run of the job, or if it does not exist.
+	If the file is not found by the job, or in case of first execution of this job, a complete job will be executed.
 
 # Execution
 

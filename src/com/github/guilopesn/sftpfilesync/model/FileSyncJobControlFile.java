@@ -47,7 +47,7 @@ public class FileSyncJobControlFile extends File {
 	    }
 	} catch (FileNotFoundException fileNotFoundException) {
 
-	    logger.error("Sync job control file not found! Creating a new one");
+	    logger.warn("Sync job control file not found! Creating a new one");
 
 	    try {
 		this.createNewFile();
