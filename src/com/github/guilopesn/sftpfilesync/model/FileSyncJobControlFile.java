@@ -8,8 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ public class FileSyncJobControlFile extends File {
 
     private static Logger logger = LogManager.getLogger();
 
-    private Set<File> files = new HashSet<>();
+    private List<File> files = new ArrayList<>();
 
     public FileSyncJobControlFile(String syncJobControlFileName) {
 

@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.github.guilopesn.sftpfilesync.util.FileUtil;
-import com.github.guilopesn.sftpfilesync.util.SFTPUtil;
 
 public class FileSyncJob implements Runnable {
 
@@ -18,21 +17,21 @@ public class FileSyncJob implements Runnable {
     private final boolean isRrecursively;
     private final String filesToIgnoreRegex;
     private final File destination;
-    private final boolean overwriteondestination;
+    private final boolean overwriteOnDestination;
     private final boolean isDifferential;
     private final SFTPServer sftpServer;
     private FileSyncJobControlFile fileSyncJobControlFile;
-    List<File> filesToSync;
+    private List<File> filesToSync;
 
     public FileSyncJob(String name, File source, boolean isRrecursively, String filesToIgnoreRegex, File destination,
-	    boolean overwriteondestination, boolean isDifferential, SFTPServer sftpServer) {
-	super();
+	    boolean overwriteOnDestination, boolean isDifferential, SFTPServer sftpServer) {
+
 	this.name = name;
 	this.source = source;
 	this.isRrecursively = isRrecursively;
 	this.filesToIgnoreRegex = filesToIgnoreRegex;
 	this.destination = destination;
-	this.overwriteondestination = overwriteondestination;
+	this.overwriteOnDestination = overwriteOnDestination;
 	this.isDifferential = isDifferential;
 	this.sftpServer = sftpServer;
 	this.filesToSync = new ArrayList<>();
@@ -65,15 +64,13 @@ public class FileSyncJob implements Runnable {
 
 		logger.info("Synchronizing " + file.getName() + " with the server");
 
-		String fileDestination = SFTPUtil.getFullDestinationFilePath(this.source, this.destination, file);
-
 		if (this.isDifferential) {
 
-		    if (sftpServer.uploadFile(file, fileDestination, this.overwriteondestination)) {
+		    if (sftpServer.uploadFile(this.source, this.destination, file, this.overwriteOnDestination)) {
 			this.fileSyncJobControlFile.add(file);
 		    }
 		} else {
-		    sftpServer.uploadFile(file, fileDestination, this.overwriteondestination);
+		    sftpServer.uploadFile(this.source, this.destination, file, this.overwriteOnDestination);
 		}
 
 		logger.info(file.getName() + " synced with the server");
@@ -91,7 +88,7 @@ public class FileSyncJob implements Runnable {
 
 	    if (this.isRrecursively) {
 
-		for (File file : FileUtil.listFileTree(this.source)) {
+		for (File file : FileUtil.listFilesRecursively(this.source)) {
 		    this.addFileToSync(file);
 		}
 	    }

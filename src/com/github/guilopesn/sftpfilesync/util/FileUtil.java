@@ -1,28 +1,28 @@
 package com.github.guilopesn.sftpfilesync.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.guilopesn.sftpfilesync.model.File;
 
 public class FileUtil {
 
-    public static Set<File> listFileTree(File directory) {
+    public static List<File> listFilesRecursively(File directory) {
 
-	Set<File> fileTree = new HashSet<File>();
+	List<File> files = new ArrayList<>();
 
 	if (directory == null || directory.listFiles() == null) {
-	    return fileTree;
+	    return files;
 	}
 
-	for (java.io.File entry : directory.listFiles()) {
-	    if (entry.isFile()) {
-		fileTree.add(new File(entry.toURI()));
+	for (java.io.File file : directory.listFiles()) {
+	    if (file.isFile()) {
+		files.add(new File(file.toURI()));
 	    } else {
-		fileTree.addAll(listFileTree(new File(entry.toURI())));
+		files.addAll(FileUtil.listFilesRecursively(new File(file.toURI())));
 	    }
 	}
 
-	return fileTree;
+	return files;
     }
 }

@@ -1,6 +1,5 @@
 package com.github.guilopesn.sftpfilesync.model;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -22,17 +21,17 @@ public class SFTPServer {
     private final int port;
     private final String username;
     private final String password;
-    private final boolean chekHostIdentity;
+    private final boolean checkHostIdentity;
     private JSch jsch;
     private Session session;
 
-    public SFTPServer(String host, int port, String username, String password, boolean chekHostIdentity) {
+    public SFTPServer(String host, int port, String username, String password, boolean checkHostIdentity) {
 	super();
 	this.host = host;
 	this.port = port;
 	this.username = username;
 	this.password = password;
-	this.chekHostIdentity = chekHostIdentity;
+	this.checkHostIdentity = checkHostIdentity;
 	this.jsch = new JSch();
     }
 
@@ -43,7 +42,7 @@ public class SFTPServer {
 	    this.session = this.jsch.getSession(this.username, this.host, this.port);
 	    this.session.setPassword(this.password);
 
-	    if (!chekHostIdentity) {
+	    if (!checkHostIdentity) {
 		java.util.Properties configs = new java.util.Properties();
 		configs.put("StrictHostKeyChecking", "no");
 		this.session.setConfig(configs);
@@ -65,7 +64,7 @@ public class SFTPServer {
 	this.session.disconnect();
     }
 
-    public boolean uploadFile(File file, String destination, boolean overwriteondestination) {
+    public boolean uploadFile(File source, File destination, File file, boolean overwriteondestination) {
 
 	ChannelSftp channelSftp = null;
 	Boolean uploadSuccess = false;
@@ -84,14 +83,16 @@ public class SFTPServer {
 		    + " Message: " + jSchException.getMessage());
 	}
 
-	SFTPUtil.verifyDirectoryTreeConsistency(channelSftp, destination);
+	String fileDestination = SFTPUtil.convertPathToUnixPattern(source, destination, file);
+	SFTPUtil.validateDestinationPath(channelSftp, fileDestination);
 
 	try {
 
 	    if (overwriteondestination) {
-		channelSftp.put(new FileInputStream(file), destination + "/" + file.getName(), ChannelSftp.OVERWRITE);
+		channelSftp.put(new FileInputStream(file), fileDestination + "/" + file.getName(),
+			ChannelSftp.OVERWRITE);
 	    } else {
-		channelSftp.put(new FileInputStream(file), destination + "/" + file.getName());
+		channelSftp.put(new FileInputStream(file), fileDestination + "/" + file.getName());
 	    }
 
 	    uploadSuccess = true;

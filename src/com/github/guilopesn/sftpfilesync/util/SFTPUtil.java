@@ -11,7 +11,7 @@ public class SFTPUtil {
 
     private static Logger logger = LogManager.getLogger();
 
-    public static String getFullDestinationFilePath(File source, File destination, File file) {
+    public static String convertPathToUnixPattern(File source, File destination, File file) {
 
 	return destination.getPath().replace('\\', '/').concat(
 		file.getParentFile().toPath().toString().replace(source.getPath(), "").replace('\\', '/').concat("/"));
@@ -30,11 +30,11 @@ public class SFTPUtil {
 	return true;
     }
 
-    public static void verifyDirectoryTreeConsistency(ChannelSftp channelSftp, String destination) {
+    public static void validateDestinationPath(ChannelSftp channelSftp, String destination) {
 
 	logger.info("Verifying if directory tree " + destination + " is consistent");
 
-	if (!verifyIfFolderExists(channelSftp, destination)) {
+	if (!SFTPUtil.verifyIfFolderExists(channelSftp, destination)) {
 
 	    logger.warn("Directory tree structure is inconsistent! Correcting");
 
@@ -49,7 +49,7 @@ public class SFTPUtil {
 
 		logger.info("Verifying if directory " + currentDirectory + " exists");
 
-		if (!verifyIfFolderExists(channelSftp, currentDirectory)) {
+		if (!SFTPUtil.verifyIfFolderExists(channelSftp, currentDirectory)) {
 
 		    logger.warn("Directory does not exists! Creating");
 
