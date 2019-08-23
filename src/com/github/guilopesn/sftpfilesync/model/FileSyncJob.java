@@ -17,6 +17,7 @@ public class FileSyncJob implements Runnable {
     private final boolean isRrecursively;
     private final String filesToIgnoreRegex;
     private final File destination;
+    private final boolean sendToDestinationRoot;
     private final boolean overwriteOnDestination;
     private final boolean isDifferential;
     private final SFTPServer sftpServer;
@@ -24,12 +25,14 @@ public class FileSyncJob implements Runnable {
     private List<File> filesToSync;
 
     public FileSyncJob(String name, File source, boolean isRrecursively, String filesToIgnoreRegex, File destination,
-	    boolean overwriteOnDestination, boolean isDifferential, SFTPServer sftpServer) {
+	    boolean sendToDestinationRoot, boolean overwriteOnDestination, boolean isDifferential,
+	    SFTPServer sftpServer) {
 
 	this.name = name;
 	this.source = source;
 	this.isRrecursively = isRrecursively;
 	this.filesToIgnoreRegex = filesToIgnoreRegex;
+	this.sendToDestinationRoot = sendToDestinationRoot;
 	this.destination = destination;
 	this.overwriteOnDestination = overwriteOnDestination;
 	this.isDifferential = isDifferential;
@@ -66,11 +69,13 @@ public class FileSyncJob implements Runnable {
 
 		if (this.isDifferential) {
 
-		    if (sftpServer.uploadFile(this.source, this.destination, file, this.overwriteOnDestination)) {
+		    if (sftpServer.uploadFile(this.source, this.destination, file, this.overwriteOnDestination,
+			    this.sendToDestinationRoot)) {
 			this.fileSyncJobControlFile.add(file);
 		    }
 		} else {
-		    sftpServer.uploadFile(this.source, this.destination, file, this.overwriteOnDestination);
+		    sftpServer.uploadFile(this.source, this.destination, file, this.overwriteOnDestination,
+			    this.sendToDestinationRoot);
 		}
 
 		logger.info(file.getName() + " synced with the server");

@@ -64,7 +64,8 @@ public class SFTPServer {
 	this.session.disconnect();
     }
 
-    public boolean uploadFile(File source, File destination, File file, boolean overwriteondestination) {
+    public boolean uploadFile(File source, File destination, File file, boolean overwriteondestination,
+	    boolean sendToDestinationRoot) {
 
 	ChannelSftp channelSftp = null;
 	Boolean uploadSuccess = false;
@@ -83,7 +84,8 @@ public class SFTPServer {
 		    + " Message: " + jSchException.getMessage());
 	}
 
-	String fileDestination = SFTPUtil.convertPathToUnixPattern(source, destination, file);
+	String fileDestination = SFTPUtil.convertPathToUnixPattern(source, destination, file, sendToDestinationRoot);
+
 	SFTPUtil.validateDestinationPath(channelSftp, fileDestination);
 
 	try {

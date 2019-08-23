@@ -21,6 +21,7 @@ All SFTPFileSync synchronization jobs configuration parameters must be contained
 	filesyncjob.1.isrecursively=true
 	filesyncjob.1.filestoignoreregex=.*.xml
 	filesyncjob.1.destination=/test
+	filesyncjob.1.sendtodestinationroot=false
 	filesyncjob.1.overwriteondestination=false
 	filesyncjob.1.isdifferential=true
 
@@ -29,6 +30,7 @@ All SFTPFileSync synchronization jobs configuration parameters must be contained
 	filesyncjob.2.isrecursively=false
 	filesyncjob.2.filestoignoreregex=
 	filesyncjob.2.destination=/test
+	filesyncjob.2.sendtodestinationroot=true
 	filesyncjob.2.overwriteondestination=false
 	filesyncjob.2.isdifferential=false
 
@@ -93,6 +95,10 @@ Note: Where the jobindex keyword exists in the parameter name, it must be replac
 #### filesyncjob.jobindex.destination
 	Must specify the remote path to where the source files should be synchronized.
 	Example: /test
+	
+#### filesyncjob.jobindex.sendtodestinationroot
+	Must be seted to true or false to specify if the source recursive path must be replicated to the destination.
+	Example: false
 
 #### filesyncjob.jobindex.overwriteondestination
 	Must be seted to true or false to overwrite or not the file on destination in case of already exists.

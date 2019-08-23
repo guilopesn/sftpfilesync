@@ -15,6 +15,7 @@ public class FileSyncJobFactory {
 		Boolean.parseBoolean(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".isrecursively")),
 		configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".filestoignoreregex"),
 		new File(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".destination")),
+		Boolean.parseBoolean(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".sendtodestinationroot")),
 		Boolean.parseBoolean(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".overwriteondestination")),
 		Boolean.parseBoolean(configurationFile.getConfiguration("filesyncjob." + fileSyncJobIndex + ".isdifferential")),
 		sftpServer);

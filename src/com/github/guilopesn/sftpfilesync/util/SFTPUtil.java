@@ -11,10 +11,19 @@ public class SFTPUtil {
 
     private static Logger logger = LogManager.getLogger();
 
-    public static String convertPathToUnixPattern(File source, File destination, File file) {
+    public static String convertPathToUnixPattern(File source, File destination, File file,
+	    boolean sendToDestinationRoot) {
 
-	return destination.getPath().replace('\\', '/').concat(
-		file.getParentFile().toPath().toString().replace(source.getPath(), "").replace('\\', '/').concat("/"));
+	String path = null;
+
+	if (sendToDestinationRoot) {
+	    path = destination.getPath().replace('\\', '/');
+	} else {
+	    path = destination.getPath().replace('\\', '/').concat(file.getParentFile().toPath().toString()
+		    .replace(source.getPath(), "").replace('\\', '/').concat("/"));
+	}
+
+	return path;
     }
 
     public static boolean verifyIfFolderExists(ChannelSftp channelSftp, String folder) {
