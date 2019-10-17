@@ -1,5 +1,6 @@
 
-# Getting Started with SFTPFileSync!
+# Getting Started with SFTPFileSync! [![Total alerts](https://img.shields.io/lgtm/alerts/g/guilopesn/sftpfilesync.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/guilopesn/sftpfilesync/alerts/)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/guilopesn/sftpfilesync.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/guilopesn/sftpfilesync/alerts/)
 
 # Configuration
 
