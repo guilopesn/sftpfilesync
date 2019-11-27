@@ -2,10 +2,8 @@ package com.github.guilopesn.sftpfilesync.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.github.guilopesn.sftpfilesync.util.FileUtil;
 
 public class FileSyncJob implements Runnable {
@@ -94,6 +92,10 @@ public class FileSyncJob implements Runnable {
 	    if (this.isRrecursively) {
 
 		for (File file : FileUtil.listFilesRecursively(this.source)) {
+		    this.addFileToSync(file);
+		}
+	    } else {
+		for (File file : FileUtil.listFiles(this.source)) {
 		    this.addFileToSync(file);
 		}
 	    }
